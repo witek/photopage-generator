@@ -1,7 +1,9 @@
 PHOTOPAGE GENERATOR
 
-    This java application takes an direcotry of photos as argument and
-    creates a HTML photo album.
+    This java application takes a direcotry of photos as argument and
+    creates a HTML photo album. It creates a single HTML, JavaScript
+	and CSS file, image thumbs and small images for the web. The
+	original photos can be downloaded by users.
 
     http://github.com/witek/photopage-generator
     mailto:wi@koczewski.de
