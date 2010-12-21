@@ -32,30 +32,34 @@ public class Generator {
 
 	private static Log log = Log.get(Generator.class);
 
-	private static File photosDir;
 	private static File pageFile;
 	private static File[] photoFiles;
-	private static String title;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) throw new RuntimeException("Missing argument: photos-directory");
-		photosDir = new File(args[0]);
+
+		Project project = new Project();
+		File photosDir = new File(args[0]);
 		if (!photosDir.exists()) throw new RuntimeException("Directory does not exist: " + photosDir.getPath());
-		title = System.getProperty("title", photosDir.getName());
+		project.setDir(photosDir);
+
+		String title = System.getProperty("title", photosDir.getName());
+		project.setTitle(title);
+
 		photoFiles = photosDir.listFiles(new PhotoFileFilter());
 		pageFile = new File(photosDir.getPath() + "/index.html");
-		generateScaled("thumbs", 100);
-		generateScaled("pictures", 500);
-		writePage();
-		copyResources();
+		generateScaled(project.getDir(), "thumbs", 100);
+		generateScaled(project.getDir(), "pictures", 500);
+		writePage(project);
+		copyResources(project.getDir());
 	}
 
-	private static void writePage() throws IOException {
+	public static void writePage(Project project) throws IOException {
 		log.info("Writing HTML page:", pageFile);
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(pageFile)));
 		HtmlRenderer html = new HtmlRenderer(out, IO.UTF_8);
 		html.startHTML();
-		html.startHEAD(title, "de");
+		html.startHEAD(project.getTitle(), "de");
 		html.LINKcss("resources/screen.css");
 		html.SCRIPTdojo();
 		html.SCRIPTjavascript("resources/activator.js", null);
@@ -131,19 +135,19 @@ public class Generator {
 		html.endDIV();
 	}
 
-	private static void generateScaled(String name, int height) throws IOException {
+	private static void generateScaled(File dir, String name, int height) throws IOException {
 		log.info("Creating", name);
 		for (File file : photoFiles) {
 			log.info("   ", file.getName());
 			BufferedImage image = IO.loadImage(file);
 			Image thumb = IO.scaledToHeight(image, height);
-			IO.writeImage(thumb, "jpg", photosDir.getPath() + "/resources/" + name + "/" + file.getName());
+			IO.writeImage(thumb, "jpg", dir.getPath() + "/resources/" + name + "/" + file.getName());
 		}
 	}
 
-	private static void copyResources() {
+	private static void copyResources(File dir) {
 		log.info("Copying resources");
-		String destination = photosDir.getPath() + "/resources";
+		String destination = dir.getPath() + "/resources";
 		IO.createDirectory(destination);
 		IO.copyResource("screen.css", destination);
 		IO.copyResource("activator.js", destination);
