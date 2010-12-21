@@ -49,6 +49,13 @@ public class Gui {
 		frame = new JFrame("Photo page generator");
 		frame.add(pb.toPanel());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		updateFields();
+	}
+
+	public void updateFields() {
+		fileField.setFile(project.getDir());
+		titleField.setText(project.getTitle());
 	}
 
 	public void storeFields() {
@@ -59,7 +66,7 @@ public class Gui {
 	public void generate() {
 		storeFields();
 		try {
-			Generator.writePage(project);
+			Generator.generate(project);
 		} catch (Throwable ex) {
 			ExceptionPanel.showErrorDialog(frame, ex);
 		}

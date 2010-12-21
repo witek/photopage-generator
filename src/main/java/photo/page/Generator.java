@@ -35,11 +35,9 @@ public class Generator {
 	private static File pageFile;
 	private static File[] photoFiles;
 
-	public static void main(String[] args) throws IOException {
-		if (args.length < 1) throw new RuntimeException("Missing argument: photos-directory");
+	public static void generate(Project project) throws IOException {
 
-		Project project = new Project();
-		File photosDir = new File(args[0]);
+		File photosDir = project.getDir();
 		if (!photosDir.exists()) throw new RuntimeException("Directory does not exist: " + photosDir.getPath());
 		project.setDir(photosDir);
 
@@ -54,7 +52,7 @@ public class Generator {
 		copyResources(project.getDir());
 	}
 
-	public static void writePage(Project project) throws IOException {
+	private static void writePage(Project project) throws IOException {
 		log.info("Writing HTML page:", pageFile);
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(pageFile)));
 		HtmlRenderer html = new HtmlRenderer(out, IO.UTF_8);
@@ -67,6 +65,7 @@ public class Generator {
 		html.startBODY();
 		writeBoard(html);
 		writePictures(html);
+		html.googleAnalytics(project.getGoogleAnalyticsId());
 		html.endBODY();
 		html.endHTML();
 		html.flush();
