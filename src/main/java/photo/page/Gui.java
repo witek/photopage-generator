@@ -26,6 +26,7 @@ public class Gui {
 	private JFrame frame;
 	private FileField fileField;
 	private JTextField titleField;
+	private JTextField googleAnalyticsIdField;
 	private JButton generateButton;
 
 	public Gui() {
@@ -37,6 +38,8 @@ public class Gui {
 
 		titleField = new JTextField();
 
+		googleAnalyticsIdField = new JTextField();
+
 		PanelBuilder pb = new PanelBuilder();
 		pb.setBorder(new EmptyBorder(5, 5, 5, 5));
 		pb.setDefaultAnchorToNorthWest();
@@ -44,6 +47,7 @@ public class Gui {
 		pb.setDefaultFillToHorizontal();
 		pb.addLn("Photo directory", fileField);
 		pb.addLn("Title", titleField);
+		pb.addLn("Google Analytics Id", googleAnalyticsIdField);
 		pb.addLn("", generateButton);
 
 		frame = new JFrame("Photo page generator");
@@ -56,11 +60,13 @@ public class Gui {
 	public void updateFields() {
 		fileField.setFile(project.getDir());
 		titleField.setText(project.getTitle());
+		googleAnalyticsIdField.setText(project.getGoogleAnalyticsId());
 	}
 
 	public void storeFields() {
 		project.setDir(fileField.getFile());
 		project.setTitle(titleField.getText());
+		project.setGoogleAnalyticsId(googleAnalyticsIdField.getText());
 	}
 
 	public void generate() {
