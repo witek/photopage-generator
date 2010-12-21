@@ -137,10 +137,12 @@ public class Generator {
 	private static void generateScaled(File dir, String name, int height) throws IOException {
 		log.info("Creating", name);
 		for (File file : photoFiles) {
+			File outputFile = new File(dir.getPath() + "/resources/" + name + "/" + file.getName());
+			if (outputFile.exists()) continue;
 			log.info("   ", file.getName());
 			BufferedImage image = IO.loadImage(file);
 			Image thumb = IO.scaledToHeight(image, height);
-			IO.writeImage(thumb, "jpg", dir.getPath() + "/resources/" + name + "/" + file.getName());
+			IO.writeImage(thumb, "jpg", outputFile.getPath());
 		}
 	}
 
